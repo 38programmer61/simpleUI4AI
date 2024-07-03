@@ -1,3 +1,4 @@
+import io
 import os
 import time
 import pyperclip
@@ -7,7 +8,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
 from audio_output import generate_audio_response, play_sound
-import io
 from PIL import Image
 
 def generate_caption(img_path: str = "img_to_caption.png") -> str:

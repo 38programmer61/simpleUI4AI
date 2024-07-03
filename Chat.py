@@ -1,7 +1,7 @@
+import streamlit as st
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
-import streamlit as st
 from st_audiorec import st_audiorec
 from audio_input import process_audio_input
 from image_input import process_image_input
