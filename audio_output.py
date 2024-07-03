@@ -2,7 +2,7 @@ from openai import OpenAI
 from playsound import playsound
 
 
-def generate_audio_response(text: str, output_file_path: str = ".speech.mp3") -> None:
+def generate_audio_response(text: str, output_file_path: str = "speech.mp3") -> None:
     """
     Generate an audio response from the given text using OpenAI's text-to-speech service.
 
