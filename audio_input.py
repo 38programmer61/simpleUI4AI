@@ -4,7 +4,7 @@ from pydub import AudioSegment
 from send_message_to_ai import execute_prompt
 
 
-def convert_audio_to_text(audio_file_path: str = "recording.mp3") -> str:
+def convert_audio_to_text(audio_file_path: str = "/sui_app_audio_dirs/audio_input/recording.mp3") -> str:
     """
     Convert audio file to text using OpenAI's transcription service.
 
@@ -32,11 +32,11 @@ def process_audio_input(chain) -> None:
         chain: The chatbot chain.
     """
     if st.session_state.wav_audio_data is not None and len(st.session_state.wav_audio_data) > 5e4:
-        with open("output.wav", "wb") as f:
+        with open("/sui_app_audio_dirs/audio_input/output.wav", "wb") as f:
             f.write(st.session_state.wav_audio_data)
 
-        audio = AudioSegment.from_wav("output.wav")
-        audio.export("recording.mp3", format="mp3", parameters=["-ac", "2", "-ar", "8000"])
-        prompt = convert_audio_to_text("recording.mp3")
+        audio = AudioSegment.from_wav("/sui_app_audio_dirs/audio_input/output.wav")
+        audio.export("/sui_app_audio_dirs/audio_input/recording.mp3", format="mp3", parameters=["-ac", "2", "-ar", "8000"])
+        prompt = convert_audio_to_text("/sui_app_audio_dirs/audio_input/recording.mp3")
         execute_prompt(chain, prompt)
 
