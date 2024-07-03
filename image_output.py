@@ -3,6 +3,7 @@ import requests
 import base64
 from typing import Dict, Any
 
+
 def generate_a_single_image(prompt: str) -> None:
     """
     Generate a single image based on a text prompt and save it.
@@ -12,6 +13,7 @@ def generate_a_single_image(prompt: str) -> None:
     """
     data = make_api_call_to_sdxl(prompt)
     save_image(data)
+
 
 def make_api_call_to_sdxl(prompt: str) -> Dict[str, Any]:
     """
@@ -56,6 +58,7 @@ def make_api_call_to_sdxl(prompt: str) -> Dict[str, Any]:
         raise Exception(f"Non-200 response: {response.text}")
 
     return response.json()
+
 
 def save_image(data: Dict[str, Any], image_path_and_name: str = "image") -> None:
     """

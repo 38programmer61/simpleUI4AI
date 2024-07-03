@@ -7,6 +7,7 @@ from audio_input import process_audio_input
 from image_input import process_image_input
 from send_message_to_ai import execute_prompt
 
+
 def main() -> None:
     """
     Main function to initialize and run the Streamlit app.
@@ -16,6 +17,7 @@ def main() -> None:
     initialize_session_state()
     prepare_components()
     run_app(chain)
+
 
 def initialize_chatbot() -> tuple:
     """
@@ -34,12 +36,14 @@ def initialize_chatbot() -> tuple:
     chain = prompt | chat
     return chain
 
+
 def initialize_session_state() -> None:
     """
     Initialize the session state for Streamlit.
     """
     if "messages" not in st.session_state:
         st.session_state.messages = []
+
 
 def prepare_components() -> None:
     """
@@ -51,6 +55,7 @@ def prepare_components() -> None:
     """
     prepare_sidebar_components()
     prepare_main_components()
+
 
 def prepare_main_components() -> None:
     """
@@ -69,6 +74,7 @@ def prepare_main_components() -> None:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
+
 def prepare_sidebar_components() -> None:
     """
     Prepare the sidebar components for the Streamlit app.
@@ -84,6 +90,7 @@ def prepare_sidebar_components() -> None:
     st.sidebar.button("Send Text", key="text_submit")
     st.sidebar.file_uploader("Image Input", key="img_file_input")
     st.sidebar.button("Send Image", key="img_send")
+
 
 def run_app(chain) -> None:
     """
