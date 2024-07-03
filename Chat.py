@@ -17,7 +17,7 @@ from audio_input import convert_audio_to_text
 from audio_output import generate_audio_response, play_sound
 from image_output import generate_a_single_image
 from image_input import generate_caption
-from send_message_to_ai import send_message_to_ai
+from send_message_to_ai import send_message_to_ai, execute_prompt
 from PIL import Image
 import io
 from pydub import AudioSegment
@@ -116,7 +116,7 @@ def run_app(chain, chat_history):
 
     if st.session_state["text_submit"]:
         prompt = st.session_state["prompt"]
-        execute_prompt(chain, chat_history, prompt)
+        execute_prompt(chain, prompt)
 
     if st.session_state["audio_input"] and st.session_state["talk"]:
     # if st.session_state["talk"]:
@@ -142,7 +142,7 @@ def run_app(chain, chat_history):
             # print("1) Before  convert_audio_to_text: --- %s seconds ---" % (time.time() - start_time))
             prompt = convert_audio_to_text()
             # print("2) Before  execute_prompt: --- %s seconds ---" % (time.time() - start_time))
-            execute_prompt(chain, chat_history, prompt)
+            execute_prompt(chain, prompt)
 
 
     if st.session_state["img_send"]:
@@ -175,46 +175,6 @@ def run_app(chain, chat_history):
         st.session_state.messages.append({"role": "assistant", "content": caption})
 
 
-def execute_prompt(chain, chat_history, prompt):
-    # prompt = st.session_state["prompt"]
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
-    st.session_state.messages.append({"role": "user", "content": prompt})
-
-    if "draw" in prompt.lower():
-        generate_a_single_image(prompt[4:])
-        with st.chat_message("assistant"):
-            st.image("image.png")
-        st.session_state.messages.append({"role": "assistant", "content": "Image Generated"})
-    elif "çiz" in prompt.lower():
-        generate_a_single_image(prompt[:-3])
-        with st.chat_message("assistant"):
-            st.image("image.png")
-        st.session_state.messages.append({"role": "assistant", "content": "Image Generated"})
-    else:
-
-        # print(st.session_state.messages)
-        response = send_message_to_ai(chain, chat_history, prompt)
-
-        # print("3) AI message obtained: --- %s seconds ---" % (time.time() - start_time))
-
-        # response = "Interesting"
-        # Display assistant response in chat message container
-        if st.session_state["audio_output"]:
-            # start_time = time.time()
-            generate_audio_response(response)
-            # print("4) AI response obtained: --- %s seconds ---" % (time.time() - start_time))
-            with st.chat_message("assistant"):
-                st.markdown(response)
-            # print("5) End: --- %s seconds ---" % (time.time() - start_time))
-            play_sound()
-
-        else:
-            with st.chat_message("assistant"):
-                st.markdown(response)
-        # Add assistant response to chat history
-        st.session_state.messages.append({"role": "assistant", "content": response})
 
 
 if __name__ == '__main__':
