@@ -14,7 +14,7 @@ from st_audiorec import st_audiorec
 from langchain_community.chat_message_histories import ChatMessageHistory
 
 from audio_input import convert_audio_to_text
-from audio_output import generate_audio_response, play_response
+from audio_output import generate_audio_response, play_sound
 from generate_image import generate_a_single_image
 from get_caption import generate_caption
 from send_message_to_ai import send_message_to_ai
@@ -164,7 +164,7 @@ def run_app(chain, chat_history):
             with st.chat_message("assistant"):
                 st.markdown(caption)
             # print("5) End: --- %s seconds ---" % (time.time() - start_time))
-            play_response()
+            play_sound()
 
         else:
             with st.chat_message("assistant"):
@@ -208,7 +208,7 @@ def execute_prompt(chain, chat_history, prompt):
             with st.chat_message("assistant"):
                 st.markdown(response)
             # print("5) End: --- %s seconds ---" % (time.time() - start_time))
-            play_response()
+            play_sound()
 
         else:
             with st.chat_message("assistant"):

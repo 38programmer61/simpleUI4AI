@@ -1,30 +1,21 @@
-import time
-import warnings
-
 from openai import OpenAI
 
-def convert_audio_to_text():
-    # start_time = time.time()
-    # warnings.filterwarnings('ignore')
-    # client = OpenAI()
-    #
-    # audio_file = open("recording.mp3", "rb")
-    # transcription = client.audio.transcriptions.create(
-    #     model="whisper-1",
-    #     file=audio_file
-    # )
-    # print("--- %s seconds ---" % (time.time() - start_time))
-    # return transcription.text
+def convert_audio_to_text(audio_file_path: str = "recording.mp3") -> str:
+    """
+    Convert audio file to text using OpenAI's transcription service.
 
+    Args:
+        audio_file_path (str): The path to the audio file to transcribe.
 
-    warnings.filterwarnings('ignore')
+    Returns:
+        str: The transcribed text from the audio file.
+    """
     client = OpenAI()
 
-    audio_file = open("recording.mp3", "rb")
+    with open(audio_file_path, "rb") as audio_file:
+        transcription = client.audio.transcriptions.create(
+            model="whisper-1",
+            file=audio_file
+        )
 
-
-    transcription = client.audio.transcriptions.create(
-        model="whisper-1",
-        file=audio_file
-    )
     return transcription.text
