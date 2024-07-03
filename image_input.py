@@ -26,7 +26,7 @@ def generate_caption(img_path: str = "img_to_caption.png") -> str:
 
         # Set up Chrome options to handle browser configuration
         chrome_options = Options()
-        # chrome_options.add_argument("--headless")  # Run in headless mode
+        chrome_options.add_argument("--headless")  # Run in headless mode
         chrome_options.add_argument("--disable-gpu")  # Disable GPU acceleration
 
         # Initialize the Chrome WebDriver
