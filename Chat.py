@@ -15,7 +15,7 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 
 from audio_input import convert_audio_to_text
 from audio_output import generate_audio_response, play_sound
-from generate_image import generate_a_single_image
+from image_output import generate_a_single_image
 from get_caption import generate_caption
 from send_message_to_ai import send_message_to_ai
 from PIL import Image
