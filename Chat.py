@@ -14,30 +14,11 @@ def main() -> None:
     """
     Main function to initialize and run the Streamlit app.
     """
-    build_audio_dirs()
     load_dotenv()
     chain = initialize_chatbot()
     initialize_session_state()
     prepare_components()
     run_app(chain)
-
-
-def build_audio_dirs(base_dir: str = "/sui_app_audio_dirs") -> None:
-    """
-    Create directories for audio input and output if they do not already exist.
-
-    Args:
-        base_dir (str): The base directory where audio directories will be created.
-                        Defaults to "/sui_app_audio_dirs".
-    """
-    dirs = [
-        base_dir,
-        os.path.join(base_dir, "audio_input"),
-        os.path.join(base_dir, "audio_output"),
-    ]
-
-    for directory in dirs:
-        os.makedirs(directory, exist_ok=True)
 
 
 def initialize_chatbot() -> tuple:
