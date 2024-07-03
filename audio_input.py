@@ -32,11 +32,16 @@ def process_audio_input(chain) -> None:
         chain: The chatbot chain.
     """
     if st.session_state.wav_audio_data is not None and len(st.session_state.wav_audio_data) > 5e4:
+        print('Entered 1')
         with open("output.wav", "wb") as f:
             f.write(st.session_state.wav_audio_data)
+        print('Entered 2')
 
         audio = AudioSegment.from_wav("output.wav")
+        print('Entered 3')
         audio.export("recording.mp3", format="mp3", parameters=["-ac", "2", "-ar", "8000"])
+        print('Entered 4')
         prompt = convert_audio_to_text("recording.mp3")
+        print('Entered 5')
         execute_prompt(chain, prompt)
 
