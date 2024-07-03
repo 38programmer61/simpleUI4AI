@@ -1,12 +1,14 @@
 import os
 import time
 import pyperclip
+import streamlit as st
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import NoSuchElementException, WebDriverException
-
+from audio_output import generate_audio_response, play_sound
+import io
+from PIL import Image
 
 def generate_caption(img_path: str = "img_to_caption.png") -> str:
     """
@@ -57,3 +59,31 @@ def generate_caption(img_path: str = "img_to_caption.png") -> str:
         return res_str
     except Exception as e:
         return "I'm tired, please try it later."
+
+
+def process_image_input() -> None:
+    """
+    Process image input and generate a caption.
+
+    Args:
+        chain: The chatbot chain.
+    """
+    with st.chat_message("user"):
+        st.image(st.session_state["img_file_input"])
+        st.session_state.messages.append({"role": "user", "content": "image"})
+        byte_data = st.session_state["img_file_input"].getvalue()
+        byte_stream = io.BytesIO(byte_data)
+        image = Image.open(byte_stream)
+        image.save('img_to_caption.png')
+        caption = generate_caption('img_to_caption.png')
+
+    if st.session_state["audio_output"]:
+        generate_audio_response(caption)
+        with st.chat_message("assistant"):
+            st.markdown(caption)
+        play_sound()
+    else:
+        with st.chat_message("assistant"):
+            st.markdown(caption)
+
+    st.session_state.messages.append({"role": "assistant", "content": caption})

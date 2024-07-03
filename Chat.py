@@ -3,46 +3,63 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
 import streamlit as st
 from st_audiorec import st_audiorec
-from langchain_community.chat_message_histories import ChatMessageHistory
-from audio_input import convert_audio_to_text
-from audio_output import generate_audio_response, play_sound
-from image_input import generate_caption
+from audio_input import process_audio_input
+from image_input import process_image_input
 from send_message_to_ai import execute_prompt
-from PIL import Image
-import io
-from pydub import AudioSegment
 
-def main():
+def main() -> None:
+    """
+    Main function to initialize and run the Streamlit app.
+    """
     load_dotenv()
     chain = initialize_chatbot()
-    initialize_sessions_state()
+    initialize_session_state()
     prepare_components()
     run_app(chain)
 
-def initialize_chatbot():
+def initialize_chatbot() -> tuple:
+    """
+    Initialize the chatbot with OpenAI's model and the chat history.
+
+    Returns:
+        tuple: The chatbot chain and chat history.
+    """
     chat = ChatOpenAI(model="gpt-3.5-turbo")
     prompt = ChatPromptTemplate.from_messages(
         [
-            (
-                "system",
-                "You are a helpful assistant. Answer all questions to the best of your ability.",
-            ),
+            ("system", "You are a helpful assistant. Answer all questions to the best of your ability."),
             MessagesPlaceholder(variable_name="messages"),
         ]
     )
     chain = prompt | chat
-
     return chain
 
-def initialize_sessions_state():
+def initialize_session_state() -> None:
+    """
+    Initialize the session state for Streamlit.
+    """
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
-def prepare_components():
+def prepare_components() -> None:
+    """
+    Prepare the components for the Streamlit app.
+
+    Args:
+        chain: The chatbot chain.
+        chat_history: The chat history.
+    """
     prepare_sidebar_components()
     prepare_main_components()
 
-def prepare_main_components():
+def prepare_main_components() -> None:
+    """
+    Prepare the main components of the Streamlit app.
+
+    Args:
+        chain: The chatbot chain.
+        chat_history: The chat history.
+    """
     st.title('IAMAI')
     if st.session_state["audio_input"]:
         wav_audio_data = st_audiorec()
@@ -52,7 +69,10 @@ def prepare_main_components():
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-def prepare_sidebar_components():
+def prepare_sidebar_components() -> None:
+    """
+    Prepare the sidebar components for the Streamlit app.
+    """
     st.sidebar.title("I/O and Settings")
     st.sidebar.image("Image.png", width=250)
     st.sidebar.button("Start A New Conversation", key="conv")
@@ -61,13 +81,17 @@ def prepare_sidebar_components():
         st.sidebar.button('Send Recorded Audio', key="talk")
     st.sidebar.checkbox("Auditory Output", key="audio_output")
     st.sidebar.text_input(label="Your Command", key="prompt")
-    st.sidebar.button("Send Text ", key="text_submit")
+    st.sidebar.button("Send Text", key="text_submit")
     st.sidebar.file_uploader("Image Input", key="img_file_input")
     st.sidebar.button("Send Image", key="img_send")
 
+def run_app(chain) -> None:
+    """
+    Run the Streamlit app.
 
-def run_app(chain):
-
+    Args:
+        chain: The chatbot chain.
+    """
     if st.session_state["conv"]:
         st.session_state.messages = []
 
@@ -76,37 +100,11 @@ def run_app(chain):
         execute_prompt(chain, prompt)
 
     if st.session_state["audio_input"] and st.session_state["talk"]:
-        if st.session_state.wav_audio_data is not None and len(st.session_state.wav_audio_data) > 5e4:
-
-            with open("output.wav", "wb") as f:
-                f.write(st.session_state.wav_audio_data)
-
-            audio = AudioSegment.from_wav("output.wav")
-            audio.export("recording.mp3", format="mp3", parameters=["-ac","2","-ar","8000"])
-            prompt = convert_audio_to_text()
-            execute_prompt(chain, prompt)
+        process_audio_input(chain)
 
     if st.session_state["img_send"]:
-        with st.chat_message("user"):
-            st.image(st.session_state["img_file_input"])
-            st.session_state.messages.append({"role": "user", "content": "image"})
-            byte_data = st.session_state["img_file_input"].getvalue()
-            byte_stream = io.BytesIO(byte_data)
-            image = Image.open(byte_stream)
-            image.save('img_to_caption.png')
-            caption = generate_caption('img_to_caption.png')
+        process_image_input()
 
-        if st.session_state["audio_output"]:
-            generate_audio_response(caption)
-            with st.chat_message("assistant"):
-                st.markdown(caption)
-            play_sound()
-
-        else:
-            with st.chat_message("assistant"):
-                st.markdown(caption)
-
-        st.session_state.messages.append({"role": "assistant", "content": caption})
 
 if __name__ == '__main__':
     main()
