@@ -9,3 +9,5 @@ To run the system
 - Run the system with "streamlit run Chat.py --server.fileWatcherType none"
 
 Python Version: 3.10
+
+![SystemArchitecture](https://github.com/38programmer61/simpleUI4AI/assets/56412256/c7e34a4c-5abb-4977-869d-898761193916)
